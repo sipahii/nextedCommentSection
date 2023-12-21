@@ -46,7 +46,13 @@ const App = () => {
 
   return (
     <div className="w-full m-auto lg:w-6/12 p-4">
-      <Comment handleInsertNode={handleInsertNode} handleEditNode={handleEditNode} handleDeleteNode={handleDeleteNode} comment={commentsData} />
+      <Comment
+        handleInsertNode={handleInsertNode}
+        handleEditNode={handleEditNode}
+        handleDeleteNode={handleDeleteNode}
+        comment={commentsData}
+        childLabel={1}
+      />
     </div>
   );
 };
