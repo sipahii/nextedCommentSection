@@ -1,5 +1,13 @@
 const useNode = () => {
+  const sortItemsByIdDescending = (obj) => {
+    if (obj && obj.items && Array.isArray(obj.items)) {
+      obj.items.sort((a, b) => b.id - a.id); // Sort in descending order
+      obj.items.forEach((item) => sortItemsByIdDescending(item));
+    }
+  };
+
   const insertNode = function (tree, commentId, item) {
+    debugger;
     if (tree.id === commentId) {
       tree.items.push({
         id: new Date().getTime(),
@@ -7,16 +15,18 @@ const useNode = () => {
         comment: item.comment,
         items: [],
       });
-
-      return tree;
+      let finalData = tree;
+      sortItemsByIdDescending(tree);
+      return finalData;
     }
 
     let latestNode = [];
     latestNode = tree.items.map((ob) => {
       return insertNode(ob, commentId, item);
     });
-
-    return { ...tree, items: latestNode };
+    let finalData = { ...tree, items: latestNode };
+    sortItemsByIdDescending(finalData);
+    return finalData;
   };
 
   const editNode = (tree, commentId, value) => {

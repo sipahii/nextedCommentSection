@@ -37,7 +37,6 @@ const App = () => {
   useEffect(() => {
     if (window) {
       let data = JSON.parse(window.localStorage.getItem("item"));
-      console.log(data);
       if (data) {
         setCommentsData(data);
       }
