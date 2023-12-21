@@ -6,9 +6,14 @@ const Comment = ({ handleInsertNode, handleEditNode, handleDeleteNode, comment }
     name: "",
     comment: "",
   });
+
   const [editMode, setEditMode] = useState(false);
   const [showInput, setShowInput] = useState(false);
   const [expand, setExpand] = useState(true);
+  const [errors, setErrors] = useState({
+    name: "",
+    comment: "",
+  });
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -19,6 +24,7 @@ const Comment = ({ handleInsertNode, handleEditNode, handleDeleteNode, comment }
     const { name, value } = e.target;
 
     setInput({ ...input, [name]: value });
+    setErrors({ ...errors, [name]: "" });
   };
 
   const handleNewComment = () => {
@@ -27,6 +33,19 @@ const Comment = ({ handleInsertNode, handleEditNode, handleDeleteNode, comment }
   };
 
   const onAddComment = () => {
+    const newErrors = {};
+    if (!input.name.trim()) {
+      newErrors.name = "Name is required*";
+    }
+    if (!input.comment.trim()) {
+      newErrors.comment = "Comment is required*";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     if (editMode) {
       handleEditNode(comment.id, inputRef?.current?.innerText);
     } else {
@@ -45,29 +64,32 @@ const Comment = ({ handleInsertNode, handleEditNode, handleDeleteNode, comment }
   const handleDelete = () => {
     handleDeleteNode(comment.id);
   };
+
   return (
-    <div className=" m-auto">
+    <div className="m-auto">
       <div className={comment?.id === 1 ? "" : "w-full bg-gray-100 my-3 rounded-lg py-2 px-4"}>
         {comment?.id === 1 ? (
           <div className="w-full bg-gray-100 p-4 rounded-lg">
             <p className="pb-2 font-semibold">Comment</p>
             <input
               type="text"
-              className="w-full px-3 py-2 rounded-md mb-3 outline-none"
+              className={`w-full px-3 py-2 rounded-md mb-3 outline-none ${errors.name && "border-red-500"}`}
               autoFocus
               value={input.name}
               onChange={(e) => handleInputChange(e)}
               placeholder="Name"
               name="name"
             />
+            {errors.name && <p className="text-red-500 text-sm py-2">{errors.name}</p>}
             <textarea
-              className="w-full px-3 py-2 rounded-md mb-3 outline-none"
+              className={`w-full px-3 py-2 rounded-md mb-3 outline-none ${errors.comment && "border-red-500"}`}
               rows={3}
               onChange={(e) => handleInputChange(e)}
               placeholder="Comment"
               value={input.comment}
               name="comment"
             />
+            {errors.comment && <p className="text-red-500 text-sm py-2">{errors.comment}</p>}
             <div className="flex justify-end">
               <Action className="cursor-pointer bg-sky-500 text-white px-3 py-1 rounded-md " type="COMMENT" handleClick={onAddComment} />
             </div>
@@ -79,7 +101,6 @@ const Comment = ({ handleInsertNode, handleEditNode, handleDeleteNode, comment }
               <p contentEditable={editMode} suppressContentEditableWarning={editMode} ref={inputRef} style={{ wordWrap: "break-word" }}>
                 {comment?.comment}
               </p>
-
               <div className="flex gap-3 my-2">
                 {editMode ? (
                   <>
@@ -122,21 +143,23 @@ const Comment = ({ handleInsertNode, handleEditNode, handleDeleteNode, comment }
             <p className="pb-2 font-semibold">Reply</p>
             <input
               type="text"
-              className="w-full px-3 py-2 rounded-md mb-3 outline-none"
+              className={`w-full px-3 py-2 rounded-md mb-3 outline-none ${errors.name && "border-red-500"}`}
               autoFocus
               value={input.name}
               onChange={(e) => handleInputChange(e)}
               placeholder="Name"
               name="name"
             />
+            {errors.name && <p className="text-red-500  text-sm py-2">{errors.name}</p>}
             <textarea
-              className="w-full px-3 py-2 rounded-md mb-3 outline-none"
+              className={`w-full px-3 py-2 rounded-md mb-3 outline-none ${errors.comment && "border-red-500"}`}
               rows={3}
               onChange={(e) => handleInputChange(e)}
               placeholder="Comment"
               value={input.comment}
               name="comment"
             />
+            {errors.comment && <p className="text-red-500 text-sm py-2">{errors.comment}</p>}
             <div className="flex gap-3 mb-2 justify-end ">
               <Action className="text-sky-500 font-semibold text-sm" type="reply" handleClick={onAddComment} />
               <Action
